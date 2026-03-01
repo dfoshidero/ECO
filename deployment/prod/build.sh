@@ -112,8 +112,7 @@ cmd_test() {
         [[ -f "$f" ]] && cp "$f" "$tmp_build/model/"
     done
     cp "$PROD_DOCKERFILE" "$tmp_build/Dockerfile"
-    build_image "$tmp_build" "eco-model:test"
-    docker tag "eco-model:test" "$DOCKER_PUSH_IMAGE:dev-$version"
+    build_image "$tmp_build" "$DOCKER_PUSH_IMAGE:dev-$version"
     echo "Tagged for push: $DOCKER_PUSH_IMAGE:dev-$version"
 }
 
@@ -142,18 +141,17 @@ cmd_release() {
     done
     echo "{\"version\": \"$new_version\", \"major\": $major}" > "$release_dir/version.json"
     cp "$PROD_DOCKERFILE" "$release_dir/Dockerfile"
-    build_image "$release_dir" "eco-model:$new_version"
-    docker tag "eco-model:$new_version" "$DOCKER_PUSH_IMAGE:release-$new_version"
-    docker tag "eco-model:$new_version" "$DOCKER_PUSH_IMAGE:latest"
+    build_image "$release_dir" "$DOCKER_PUSH_IMAGE:release-$new_version"
+    docker tag "$DOCKER_PUSH_IMAGE:release-$new_version" "$DOCKER_PUSH_IMAGE:latest"
     echo "Tagged for push: $DOCKER_PUSH_IMAGE:release-$new_version, $DOCKER_PUSH_IMAGE:latest"
-    $PYTHON -c "
+    (cd "$REPO_ROOT" && $PYTHON -c "
 import json
-p='$DEV_WORKING/version.json'
+p='deployment/dev/working/version.json'
 d=json.load(open(p))
 d['version']='$new_version'
 d['major']=$major
 json.dump(d,open(p,'w'),indent=2)
-"
+")
     echo "Updated $DEV_WORKING/version.json to $new_version (version is always set by build.sh)"
     if [[ "$bump_type" == "major" ]]; then
         if command -v gh &>/dev/null && [[ -d "$DATA_DIR/v$major" ]]; then
