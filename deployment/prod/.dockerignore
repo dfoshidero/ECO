@@ -1,0 +1,12 @@
+# Exclude unnecessary files from Docker build context
+.git
+.gitignore
+*.md
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+.mypy_cache
+.ruff_cache
+*.egg-info
+.eggs

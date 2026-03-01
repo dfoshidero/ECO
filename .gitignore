@@ -1,5 +1,10 @@
 # Ignore everything in the data directory
 data/*
 
-# Except the logs directory
-!data/logs/
+# Except versioned logs (keep performance logs tracked)
+!data/v*/
+!data/v*/logs/
+
+# Ignore raw and processed (too large for git)
+data/v*/raw/
+data/v*/processed/

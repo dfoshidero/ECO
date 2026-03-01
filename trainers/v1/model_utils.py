@@ -14,6 +14,8 @@ from sklearn.preprocessing import StandardScaler, LabelEncoder
 from scipy.stats import uniform, randint
 import numpy as np
 
+from _paths import get_data_version
+
 # Define parameter distributions for hyperparameter tuning
 param_dist_gb = {
     "regressor__n_estimators": randint(50, 5000),
@@ -89,7 +91,10 @@ def tune_model(X, y):
 # Function to load datasets
 def load_datasets():
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    import_dir = os.path.join(current_dir, "../data/processed/inspect")
+    data_version = get_data_version()
+    import_dir = os.path.join(
+        current_dir, "..", "..", "data", data_version, "processed", "inspect"
+    )
 
     synthetic_PATH = os.path.join(import_dir, "cleaned_synthetic.csv")
 

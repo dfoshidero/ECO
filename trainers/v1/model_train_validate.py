@@ -1,6 +1,6 @@
 """
-This script is designed to load a dataset, preprocess it, train multiple machine learning models, 
-evaluate their performance using cross-validation, and save the models along with relevant metadata. 
+This script is designed to load a dataset, preprocess it, train multiple machine learning models,
+evaluate their performance using cross-validation, and save the models along with relevant metadata.
 The script limits the dataset size for model training, tunes the models, and logs their performance metrics.
 """
 
@@ -11,10 +11,12 @@ from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.metrics import r2_score
 from sklearn.base import clone
 from model_utils import tune_model, load_datasets, prepare_datasets, save_model_and_data
+from _paths import get_data_version
 
-# Define the base directory and model paths
+# Define the base directory and model paths (write to deployment/dev/models/<version>)
 current_dir = os.path.dirname(os.path.abspath(__file__))
-model_dir = os.path.join(current_dir, "../src/model")
+data_version = get_data_version()
+model_dir = os.path.join(current_dir, "..", "..", "deployment", "dev", "models", data_version)
 os.makedirs(model_dir, exist_ok=True)
 
 df = load_datasets()
@@ -95,7 +97,8 @@ for model_name, model in model_cleaned.items():
     save_model_and_data(model, full_model_name, model_dir, performance_logs)
 
 # Save performance logs to a text file with date and time
-log_dir = os.path.join(current_dir, "../data/logs")
+log_dir = os.path.join(current_dir, "..", "..", "data", data_version, "logs")
+os.makedirs(log_dir, exist_ok=True)
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 performance_file_path = os.path.join(log_dir, f"performance_models_{timestamp}.txt")
 with open(performance_file_path, "w") as f:

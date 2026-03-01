@@ -1,5 +1,5 @@
-from model_predictor import load_resources, predict as model_predict
-from feature_extractor import extract, initialize_resources
+from .model_predictor import load_resources, predict as model_predict
+from .feature_extractor import extract, initialize_resources
 import time
 import numpy as np
 import os

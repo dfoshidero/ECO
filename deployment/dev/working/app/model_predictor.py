@@ -7,10 +7,11 @@ import numpy as np
 def load_resources():
     """
     Load the necessary resources.
+    Model directory is a sibling of the app directory (e.g. deployment structure).
     :return: tuple of loaded resources
     """
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    model_dir = os.path.join(current_dir, "model")
+    model_dir = os.path.join(current_dir, "..", "model")
 
     features_filepath = os.path.join(model_dir, "features.pkl")
     label_encoders_filepath = os.path.join(model_dir, "label_encoders.pkl")

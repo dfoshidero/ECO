@@ -1,0 +1,8 @@
+{
+  "files": [
+    "synthetic_HistGradientBoosting.pkl",
+    "features.pkl",
+    "label_encoders.pkl",
+    "unique_values.pkl"
+  ]
+}

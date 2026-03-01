@@ -1,0 +1,2 @@
+# Trainer writes here: from repo root, cd trainers/v1 && python model_train_validate.py
+# Required files are listed in manifest.json

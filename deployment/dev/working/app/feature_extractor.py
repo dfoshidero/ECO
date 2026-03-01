@@ -330,10 +330,10 @@ def extract_explicit_features(
 
 def extract(input_text):
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    model_dir = os.path.join(current_dir, "model")
-    synonyms_path = os.path.join(current_dir, "config/synonyms.json")
+    model_dir = os.path.join(current_dir, "..", "model")
+    synonyms_path = os.path.join(current_dir, "config", "synonyms.json")
     numerical_keywords_path = os.path.join(
-        current_dir, "config/numerical_keywords.json"
+        current_dir, "config", "numerical_keywords.json"
     )
 
     unique_values = load_unique_values(model_dir)

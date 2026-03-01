@@ -1,6 +1,10 @@
 import pandas as pd
 import os
-import numpy as np
+import sys
+
+# Add parent to path for _paths import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from _paths import get_data_version_from_prep
 
 """
 1. Import synthetic datasets.
@@ -8,8 +12,11 @@ import numpy as np
 
 # Define the base directory and data paths
 current_dir = os.path.dirname(os.path.abspath(__file__))
-data_dir = os.path.join(current_dir, "../../data/raw")
-export_dir = os.path.join(current_dir, "../../data/processed")
+data_version = get_data_version_from_prep(__file__)
+data_dir = os.path.join(current_dir, "..", "..", "..", "data", data_version, "raw")
+export_dir = os.path.join(
+    current_dir, "..", "..", "..", "data", data_version, "processed"
+)
 
 os.makedirs(export_dir, exist_ok=True)
 
@@ -92,6 +99,8 @@ assumptionsData = Assume(materials, syntheticData)
 """
 4. Clean datasets and re-name variables to.
 """
+
+import numpy as np
 
 # Replace nan values with "Other"
 syntheticData.replace(np.nan, "Other", inplace=True)
@@ -219,6 +228,7 @@ def printUniqueCols():
 
 
 syntheticData_PATH = os.path.join(export_dir, "inspect/cleaned_synthetic.csv")
+os.makedirs(os.path.dirname(syntheticData_PATH), exist_ok=True)
 syntheticData.to_csv(syntheticData_PATH, index=False)
 syntheticData.info()
 
