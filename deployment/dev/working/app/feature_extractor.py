@@ -17,16 +17,35 @@ _stop_words = None
 
 
 def initialize_resources():
+    """Load spacy and stop words. Sentence transformer is lazy-loaded on first /predict/text."""
     global _nlp_model, _sentence_transformer_model, _stop_words
 
     if _nlp_model is None:
         _nlp_model = spacy.load("en_core_web_md", disable=["parser"])
 
-    if _sentence_transformer_model is None:
-        _sentence_transformer_model = SentenceTransformer("all-MiniLM-L6-v2")
+    # Sentence transformer is loaded on first use via _get_sentence_transformer_model()
+    # so startup does not require Hugging Face. Set SENTENCE_TRANSFORMER_MODEL to a
+    # local path for offline use.
 
     if _stop_words is None:
         _stop_words = spacy.lang.en.stop_words.STOP_WORDS
+
+
+def _get_sentence_transformer_model():
+    """Load sentence transformer on first use (optional: from local path via env)."""
+    global _sentence_transformer_model
+    if _sentence_transformer_model is not None:
+        return _sentence_transformer_model
+    model_name = os.environ.get("SENTENCE_TRANSFORMER_MODEL", "all-MiniLM-L6-v2")
+    try:
+        _sentence_transformer_model = SentenceTransformer(model_name)
+    except Exception as e:
+        raise RuntimeError(
+            "Text embedding model could not be loaded. "
+            "Check network access to Hugging Face, or set SENTENCE_TRANSFORMER_MODEL "
+            "to a local model path for offline use."
+        ) from e
+    return _sentence_transformer_model
 
 
 numerical_features = [
@@ -167,7 +186,7 @@ def extract_feature_values(
     threshold=SIMILARITY_THRESHOLD,
 ):
     nlp = _nlp_model
-    model = _sentence_transformer_model
+    model = _get_sentence_transformer_model()
     doc = nlp(input_text)
     explicit_features, filtered_text = extract_explicit_features(
         input_text, unique_values, synonym_dict, model, numerical_features

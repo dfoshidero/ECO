@@ -171,7 +171,7 @@ class PredictionResponse(BaseModel):
     prediction_kgCO2e_per_m2: float = Field(
         ...,
         description="Predicted embodied carbon (kgCO2e/m²)",
-        example=387.42,
+        examples=[387.42],
     )
 
 
@@ -181,7 +181,7 @@ class PredictTextRequest(BaseModel):
     text: str = Field(
         ...,
         description="Free-text description of the building (e.g. materials, size, use)",
-        example="5 storey office building, 5000 m2 gross internal area, concrete frame, steel columns and beams, curtain wall facade",
+        examples=["5 storey office building, 5000 m2 gross internal area, concrete frame, steel columns and beams, curtain wall facade"],
     )
 
 
@@ -249,7 +249,7 @@ PREDICT_REQUEST_EXAMPLE = {
 async def predict(
     data: dict = Body(
         ...,
-        example=PREDICT_REQUEST_EXAMPLE,
+        examples=[PREDICT_REQUEST_EXAMPLE],
         description="JSON with keys matching the 33 feature names. Use null for missing values.",
     ),
 ):
@@ -327,7 +327,12 @@ async def predict_text(data: PredictTextRequest):
     from .feature_extractor import extract
     from .model_predictor import predict as model_predict
 
-    value_list = extract(text)
+    try:
+        value_list = extract(text)
+    except RuntimeError as e:
+        if "embedding model" in str(e).lower() or "sentence_transformer" in str(e).lower():
+            raise HTTPException(status_code=503, detail=str(e)) from e
+        raise
     user_input = {}
     for k in PREDICT_KEYS:
         v = value_list.get(k)
