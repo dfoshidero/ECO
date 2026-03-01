@@ -49,15 +49,15 @@ models = {
     "HistGradientBoosting": (
         HistGradientBoostingRegressor(random_state=42, verbose=1),
         param_dist_hgb,
-    ),
-    "GradientBoosting": (
-        GradientBoostingRegressor(random_state=42, verbose=1),
-        param_dist_gb,
-    ),
-    "RandomForest": (
-        RandomForestRegressor(random_state=42, verbose=1),
-        param_dist_rf,
-    ),
+    )#,
+    #"GradientBoosting": (
+    #    GradientBoostingRegressor(random_state=42, verbose=1),
+    #    param_dist_gb,
+    #),
+    #"RandomForest": (
+    #    RandomForestRegressor(random_state=42, verbose=1),
+    #    param_dist_rf,
+    #),
 }
 
 

@@ -72,7 +72,7 @@ for model_name, model in model_cleaned.items():
     # Clone the model to perform cross-validation without affecting the original model
     model_cv = clone(model)
     if hasattr(model_cv, "verbose"):
-        model_cv.verbose = 0
+        model_cv.verbose = False
 
     # Calculate cross-validation scores
     try:
